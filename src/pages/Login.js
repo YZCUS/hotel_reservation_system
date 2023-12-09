@@ -50,7 +50,7 @@ export default function Login() {
         className="d-flex flex-column mt-5 py-3 justify-content-center align-content-center"
         style={{ height: "100%" }}
       >
-        <h3 className="text-center">{message}</h3>
+        <h3 className="text-center mb-4">{message}</h3>
         <Form
           className="d-flex flex-column justify-content-center mx-auto"
           onSubmit={handleSubmit}
