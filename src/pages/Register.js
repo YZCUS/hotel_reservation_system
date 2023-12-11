@@ -14,7 +14,9 @@ export default function Register() {
   const [passwordNotMatch, setPasswordNotMatch] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [message, setMessage] = useState("Please enter your information for registration");
+  const [message, setMessage] = useState(
+    "Please enter your information for registration"
+  );
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -28,8 +30,7 @@ export default function Register() {
       );
       if (response.ok) {
         const jsonResponse = await response.json();
-        console.log(jsonResponse);
-        setUsernameExists(jsonResponse);
+        setUsernameExists(jsonResponse.exists);
       }
       throw new Error("Request failed!");
     } catch (error) {
@@ -39,11 +40,43 @@ export default function Register() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError(null);
     if (formData.password !== formData.confirmPassword) {
       setPasswordNotMatch(true);
+      setLoading(false);
       return;
     }
+    setPasswordNotMatch(false);
+    await checkUsernameExists(formData.username);
+    if (usernameExists) {
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const response = await fetch("http://localhost:8080/api/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        setMessage("Registration successful!");
+        // Redirect or further actions here...
+      } else {
+        const errorData = await response.json();
+        setError(errorData.message || "Registration failed");
+      }
+    } catch (error) {
+      console.error("Registration error:", error);
+      setError("Registration failed due to an error");
+    }
+    setLoading(false);
   };
+
   return (
     <Container
       className="d-flex flex-column mt-5 py-3 justify-content-center align-content-center"
@@ -58,6 +91,10 @@ export default function Register() {
         {error && <Alert variant="danger">{error}</Alert>}
         {usernameExists && (
           <Alert variant="warning">Username already exists</Alert>
+        )}
+        
+        {passwordNotMatch && (
+          <Alert variant="danger">Passwords do not match</Alert>
         )}
 
         <Form.Group controlId="formUsername">
