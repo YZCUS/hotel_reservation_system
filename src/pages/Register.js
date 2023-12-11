@@ -32,7 +32,7 @@ export default function Register() {
         const jsonResponse = await response.json();
         setUsernameExists(jsonResponse.exists);
       }
-      throw new Error("Request failed!");
+      throw new Error("Check request failed!");
     } catch (error) {
       console.log("Error checkUsernameExists ", error);
     }
