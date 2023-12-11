@@ -25,7 +25,7 @@ export default function Register() {
   const checkUsernameExists = async (username) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/customer/check?username=${username}`,
+        `http://localhost:8080/api/customer/check?username=${username}`,
         { method: "GET" }
       );
       if (response.ok) {
