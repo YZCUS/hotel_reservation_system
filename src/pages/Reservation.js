@@ -4,6 +4,13 @@ import { AuthOptions } from "../authentication/AuthOptions";
 import { Link, useNavigate } from "react-router-dom";
 
 export default function Reservation() {
+  const navigate = useNavigate();
+  const { customerId } = useContext(AuthOptions);
+  useEffect(() => {
+    if (!customerId) {
+      navigate("/login");
+    }
+  }, [customerId, navigate]);
   const [searchParams, setSearchParams] = useState({
     hotelBrand: "",
     bedNumber: "",
@@ -13,14 +20,13 @@ export default function Reservation() {
     checkInDate: "",
     checkOutDate: "",
   });
-
-  const navigate = useNavigate();
+  const today = new Date().toISOString().split("T")[0];
 
   const handleChange = (e) => {
     setSearchParams({ ...searchParams, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async(e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const response = await fetch("http://localhost:8080/reservation/search", {
@@ -31,7 +37,9 @@ export default function Reservation() {
 
       if (response.ok) {
         const results = await response.json();
-        navigate('/search-results', { state: { results } }); // Pass results to SearchResult.js
+        navigate("/searchresult", {
+          state: { results: results, searchParams: searchParams },
+        });
       } else {
         console.error("Search failed");
       }
@@ -76,11 +84,11 @@ export default function Reservation() {
                   name="bedNumber"
                   onChange={handleChange}
                   value={searchParams.bedNumber}
+                  required
                 >
                   <option value="">Select Number</option>
                   <option value="1">1</option>
                   <option value="2">2</option>
-                  required
                 </Form.Control>
               </Form.Group>
             </Col>
@@ -99,7 +107,7 @@ export default function Reservation() {
                   <option value="">Select Type</option>
                   <option value="Standard">Standard</option>
                   <option value="View">View</option>
-                  <option value="Execution">Execution</option>
+                  <option value="Executive">Executive</option>
                   <option value="President">President</option>
                 </Form.Control>
               </Form.Group>
@@ -112,6 +120,7 @@ export default function Reservation() {
                     <Form.Control
                       type="number"
                       name="minPrice"
+                      min={0}
                       onChange={handleChange}
                       value={searchParams.minPrice}
                     />
@@ -123,6 +132,7 @@ export default function Reservation() {
                     <Form.Control
                       type="number"
                       name="maxPrice"
+                      min={0}
                       onChange={handleChange}
                       value={searchParams.maxPrice}
                     />
@@ -139,6 +149,7 @@ export default function Reservation() {
                 <Form.Control
                   type="date"
                   name="checkInDate"
+                  min={today}
                   onChange={handleChange}
                   value={searchParams.checkInDate}
                   required
@@ -151,6 +162,7 @@ export default function Reservation() {
                 <Form.Control
                   type="date"
                   name="checkOutDate"
+                  min={today && searchParams.checkInDate} 
                   onChange={handleChange}
                   value={searchParams.checkOutDate}
                   required

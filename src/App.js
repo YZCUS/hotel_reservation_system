@@ -13,6 +13,7 @@ import Reservation from "./pages/Reservation";
 import Aboutus from "./pages/Aboutus";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import SearchResult from "./pages/SearchResult";
 import { AuthProvider } from "./authentication/AuthOptions";
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
             <Route exact path="/aboutus" element={<Aboutus />} />
             <Route exact path="/login" element={<Login />} />
             <Route exact path="/register" element={<Register />} />
+            <Route exact path="/searchresult" element={<SearchResult />} />
           </Routes>
           <Footer />
         </Router>
