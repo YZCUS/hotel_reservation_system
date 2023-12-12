@@ -14,14 +14,30 @@ export default function Reservation() {
     checkOutDate: "",
   });
 
+  const navigate = useNavigate();
+
   const handleChange = (e) => {
     setSearchParams({ ...searchParams, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
-    // Submit search logic
-    console.log(searchParams);
+    try {
+      const response = await fetch("http://localhost:8080/reservation/search", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(searchParams),
+      });
+
+      if (response.ok) {
+        const results = await response.json();
+        navigate('/search-results', { state: { results } }); // Pass results to SearchResult.js
+      } else {
+        console.error("Search failed");
+      }
+    } catch (error) {
+      console.error("Error performing search:", error);
+    }
   };
 
   return (
@@ -64,6 +80,7 @@ export default function Reservation() {
                   <option value="">Select Number</option>
                   <option value="1">1</option>
                   <option value="2">2</option>
+                  required
                 </Form.Control>
               </Form.Group>
             </Col>
@@ -124,6 +141,7 @@ export default function Reservation() {
                   name="checkInDate"
                   onChange={handleChange}
                   value={searchParams.checkInDate}
+                  required
                 />
               </Form.Group>
             </Col>
@@ -135,6 +153,7 @@ export default function Reservation() {
                   name="checkOutDate"
                   onChange={handleChange}
                   value={searchParams.checkOutDate}
+                  required
                 />
               </Form.Group>
             </Col>
