@@ -1,11 +1,12 @@
 import React, { useContext, useEffect, useState } from "react";
 import Container from "react-bootstrap/esm/Container";
 import { AuthOptions } from "../authentication/AuthOptions";
-import { Link } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
 
 export default function History() {
   const { customerId } = useContext(AuthOptions);
   const [reservations, setReservations] = useState([]);
+  const navigate = useNavigate();
   useEffect(() => {
     async function findResservationByCutsomerId(customerId) {
       try {
@@ -23,8 +24,13 @@ export default function History() {
         console.log("Error findResservationByCutsomerId ", error);
       }
     }
-    findResservationByCutsomerId(customerId);
-  }, [customerId]);
+    if (customerId) {
+      findResservationByCutsomerId(customerId);
+    }
+    else {
+      navigate("/login");
+    }
+  }, [customerId,navigate]);
   console.log(reservations);
 
   const isWithinTwoDays = (checkInDate) => {
@@ -36,23 +42,25 @@ export default function History() {
     return checkIn <= twoDaysLater;
   };
 
-  const cancelReservation = async(reservationId) => {
+  const cancelReservation = async (reservationId) => {
     try {
       const response = await fetch(
         `http://localhost:8080/reservation/cancel?reservationId=${reservationId}`,
         { method: "PUT" }
       );
       if (response.ok) {
-        setReservations(reservations.filter(reservation => reservation.reservationId !== reservationId));
-      }
-      else{
+        setReservations(
+          reservations.filter(
+            (reservation) => reservation.reservationId !== reservationId
+          )
+        );
+      } else {
         throw new Error("Cancel failed!");
       }
     } catch (error) {
       console.log("Error Cancel Reservation ", error);
     }
   };
-
 
   return (
     <div>
@@ -86,8 +94,8 @@ export default function History() {
                   <td>{reservation.totalPrice}</td>
                   <td>
                     <Link className="btn btn-primary mx-2" to={`/`}>
-                          View
-                        </Link>
+                      View
+                    </Link>
                     {!isWithinTwoDays(reservation.checkInDate) && (
                       <>
                         <Link className="btn btn-outline-primary mx-2" to={`/`}>
@@ -95,7 +103,9 @@ export default function History() {
                         </Link>
                         <button
                           className="btn btn-danger mx-2"
-                          onClick={() => cancelReservation(reservation.reservationId)}
+                          onClick={() =>
+                            cancelReservation(reservation.reservationId)
+                          }
                         >
                           Cancel
                         </button>
