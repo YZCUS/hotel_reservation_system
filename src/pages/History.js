@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import {Container,Button} from "react-bootstrap/";
+import { Container, Button } from "react-bootstrap/";
 import { AuthOptions } from "../authentication/AuthOptions";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -44,11 +44,11 @@ export default function History() {
     return checkIn <= twoDaysLater;
   };
 
-  const updateReservation = async (reservationId, newStatus) => {
+  const updateReservation = async (customerId, reservationId, newStatus) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/reservation/update?reservationId=${reservationId}&newStatus=${newStatus}`,
-        { method: "PUT" }
+        `http://localhost:8080/reservation/update?customerId=${customerId}&reservationId=${reservationId}&newStatus=${newStatus}`,
+        { method: "POST" }
       );
       if (response.ok) {
         const updatedReservations = reservations.map((reservation) =>
@@ -119,6 +119,7 @@ export default function History() {
                           className=" mx-2"
                           onClick={() =>
                             updateReservation(
+                              customerId,
                               reservation.reservationId,
                               "confirmed"
                             )
@@ -130,18 +131,19 @@ export default function History() {
                     )}
 
                     {(reservation.status === "pending" ||
-                      (reservation.status === "comfirmed" &&
-                      !isWithinTwoDays(reservation.checkInDate))) && (
+                      (reservation.status === "confirmed" &&
+                        !isWithinTwoDays(reservation.checkInDate))) && (
                       <>
                         <Button
                           variant="outline-danger"
                           className="mx-2"
                           onClick={() =>
                             updateReservation(
+                              customerId,
                               reservation.reservationId,
                               "cancelled"
-                              )
-                            }
+                            )
+                          }
                         >
                           Cancel
                         </Button>
