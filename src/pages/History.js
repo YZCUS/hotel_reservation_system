@@ -1,14 +1,14 @@
 import React, { useContext, useEffect, useState } from "react";
 import Container from "react-bootstrap/esm/Container";
 import { AuthOptions } from "../authentication/AuthOptions";
-import { Link,useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function History() {
   const { customerId } = useContext(AuthOptions);
   const [reservations, setReservations] = useState([]);
   const navigate = useNavigate();
   useEffect(() => {
-    async function findResservationByCutsomerId(customerId) {
+    async function findReservationByCutsomerId(customerId) {
       try {
         const response = await fetch(
           `http://localhost:8080/reservation/history?customerId=${customerId}`,
@@ -21,16 +21,15 @@ export default function History() {
         }
         throw new Error("Request failed!");
       } catch (error) {
-        console.log("Error findResservationByCutsomerId ", error);
+        console.log("Error findReservationByCutsomerId ", error);
       }
     }
     if (customerId) {
-      findResservationByCutsomerId(customerId);
-    }
-    else {
+      findReservationByCutsomerId(customerId);
+    } else {
       navigate("/login");
     }
-  }, [customerId,navigate]);
+  }, [customerId, navigate]);
   console.log(reservations);
 
   const isWithinTwoDays = (checkInDate) => {
@@ -42,23 +41,24 @@ export default function History() {
     return checkIn <= twoDaysLater;
   };
 
-  const cancelReservation = async (reservationId) => {
+  const updateReservation = async (reservationId, newStatus) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/reservation/cancel?reservationId=${reservationId}`,
+        `http://localhost:8080/reservation/update?reservationId=${reservationId}&newStatus=${newStatus}`,
         { method: "PUT" }
       );
       if (response.ok) {
-        setReservations(
-          reservations.filter(
-            (reservation) => reservation.reservationId !== reservationId
-          )
+        const updatedReservations = reservations.map((reservation) =>
+          reservation.reservationId === reservationId
+            ? { ...reservation, status: newStatus }
+            : reservation
         );
+        setReservations(updatedReservations);
       } else {
-        throw new Error("Cancel failed!");
+        throw new Error(`${newStatus} Fail!`);
       }
     } catch (error) {
-      console.log("Error Cancel Reservation ", error);
+      console.log("Error update reservation status", error);
     }
   };
 
@@ -66,9 +66,12 @@ export default function History() {
     <div>
       <Container>
         <h3 className="d-flex mx-auto mt-4 justify-content-center">History</h3>
-        {customerId && <h3>Customer ID: {customerId}</h3>}
+        <p>
+          To cancel the reservation within 2 days, please contact customer
+          service
+        </p>
         <div></div>
-        <div className="py-4">
+        <div className="pb-4">
           <table className="table border shadow">
             <thead>
               <tr>
@@ -78,6 +81,7 @@ export default function History() {
                 <th scope="col">Check In Date</th>
                 <th scope="col">Check Out Date</th>
                 <th scope="col">Price</th>
+                <th scope="col">Status</th>
                 <th scope="col">Action</th>
               </tr>
             </thead>
@@ -88,29 +92,49 @@ export default function History() {
                     {index + 1}
                   </th>
                   <td>{reservation.reservationId}</td>
-                  <td>{reservation.roomType}</td>
+                  <td>
+                    {reservation.hotelName} - {reservation.roomType} -{" "}
+                    {reservation.roomNumber}
+                  </td>
                   <td>{reservation.checkInDate}</td>
                   <td>{reservation.checkOutDate}</td>
                   <td>{reservation.totalPrice}</td>
+                  <td>{reservation.status}</td>
                   <td>
                     <Link className="btn btn-primary mx-2" to={`/`}>
                       View
                     </Link>
-                    {!isWithinTwoDays(reservation.checkInDate) && (
+                    {reservation.status === "pending" && (
                       <>
-                        <Link className="btn btn-outline-primary mx-2" to={`/`}>
-                          Edit
-                        </Link>
                         <button
-                          className="btn btn-danger mx-2"
+                          className="btn btn-outline-primary mx-2"
                           onClick={() =>
-                            cancelReservation(reservation.reservationId)
+                            updateReservation(
+                              reservation.reservationId,
+                              "confirmed"
+                            )
                           }
                         >
-                          Cancel
+                          Confirm
                         </button>
                       </>
                     )}
+
+                    {((reservation.status === "pending"&&reservation.status!=="cancelled")||!isWithinTwoDays(reservation.checkInDate)) && (
+                        <>
+                          <button
+                            className="btn btn-danger mx-2"
+                            onClick={() =>
+                              updateReservation(
+                                reservation.reservationId,
+                                "cancelled"
+                              )
+                            }
+                          >
+                            Cancel
+                          </button>
+                        </>
+                      )}
                   </td>
                 </tr>
               ))}

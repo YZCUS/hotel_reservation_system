@@ -119,9 +119,8 @@ export default function Profile() {
       >
         <h2 className="text-center mb-4">Profile</h2>
 
-        <div className="user-current-details">
-          <h5>Current User Information</h5>
-          <p>To change Username or Name, please contact us!</p>
+        <h5>Current User Information :</h5>
+        <div className="user-current-details d-flex justify-content-between mt-2">
           <p>
             <b>Name:</b> {currentUser.name}
           </p>
@@ -132,6 +131,7 @@ export default function Profile() {
             <b>Phone Number:</b> {currentUser.phoneNumber}
           </p>
         </div>
+        <p>To change Username or Name, please contact us!</p>
 
         <hr />
 

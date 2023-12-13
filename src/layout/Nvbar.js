@@ -24,9 +24,6 @@ export default function Nvbar() {
             <Nav.Link as={Link} to="/gallery">
               Gallery
             </Nav.Link>
-            <Nav.Link as={Link} to="/service">
-              Service
-            </Nav.Link>
           </Nav>
           {auth ? (
             <>
