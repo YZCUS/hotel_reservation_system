@@ -37,7 +37,7 @@ export default function Review() {
       console.log("Error confirming reservation", error);
     }
   };
-  const handleBack = async() => {
+  const handleBack = async () => {
     try {
       const response = await fetch(
         `http://localhost:8080/reservation/update?reservationId=${reservation.reservationId}&newStatus=cancelled`,
@@ -52,6 +52,9 @@ export default function Review() {
       console.log("Error cancelling reservation", error);
     }
   };
+  const handleHold =  () => {
+    navigate("/history");
+  };
   return (
     <div>
       <Container
@@ -59,7 +62,10 @@ export default function Review() {
         style={{ height: "100%", width: "70%" }}
       >
         <h2 className="text-center mb-4">Review Your Reservation</h2>
-        <Card className="d-flex flex-column justify-content-center mx-auto mb-3" style={{ width: "55%" }}>
+        <Card
+          className="d-flex flex-column justify-content-center mx-auto mb-3"
+          style={{ width: "55%" }}
+        >
           <Card.Body>
             <Card.Title>Reservation Details</Card.Title>
             <ListGroup className="list-group-flush">
@@ -84,11 +90,14 @@ export default function Review() {
             </ListGroup>
           </Card.Body>
           <Card.Footer>
-            <Button variant="primary" onClick={handleConfirm}>
+            <Button variant="outline-primary" onClick={handleConfirm}>
               Confirm
             </Button>
             <Button variant="secondary" onClick={handleBack} className="ms-2">
               Back
+            </Button>
+            <Button variant="info" onClick={handleHold} className="ms-2">
+              Hold for 15 minutes
             </Button>
           </Card.Footer>
         </Card>

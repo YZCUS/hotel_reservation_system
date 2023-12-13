@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import Container from "react-bootstrap/esm/Container";
+import {Container,Button} from "react-bootstrap/";
 import { AuthOptions } from "../authentication/AuthOptions";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -30,7 +30,10 @@ export default function History() {
       navigate("/login");
     }
   }, [customerId, navigate]);
-  console.log(reservations);
+
+  const handleView = async (reservation) => {
+    navigate("/view", { state: { reservation } });
+  };
 
   const isWithinTwoDays = (checkInDate) => {
     const today = new Date();
@@ -54,6 +57,7 @@ export default function History() {
             : reservation
         );
         setReservations(updatedReservations);
+        navigate("/history");
       } else {
         throw new Error(`${newStatus} Fail!`);
       }
@@ -101,13 +105,18 @@ export default function History() {
                   <td>{reservation.totalPrice}</td>
                   <td>{reservation.status}</td>
                   <td>
-                    <Link className="btn btn-primary mx-2" to={`/`}>
+                    <Button
+                      variant="primary"
+                      className="mx-2"
+                      onClick={() => handleView(reservation)}
+                    >
                       View
-                    </Link>
+                    </Button>
                     {reservation.status === "pending" && (
                       <>
-                        <button
-                          className="btn btn-outline-primary mx-2"
+                        <Button
+                          variant="outline-primary"
+                          className=" mx-2"
                           onClick={() =>
                             updateReservation(
                               reservation.reservationId,
@@ -116,25 +125,28 @@ export default function History() {
                           }
                         >
                           Confirm
-                        </button>
+                        </Button>
                       </>
                     )}
 
-                    {((reservation.status === "pending"&&reservation.status!=="cancelled")||!isWithinTwoDays(reservation.checkInDate)) && (
-                        <>
-                          <button
-                            className="btn btn-danger mx-2"
-                            onClick={() =>
-                              updateReservation(
-                                reservation.reservationId,
-                                "cancelled"
+                    {(reservation.status === "pending" ||
+                      (reservation.status === "comfirmed" &&
+                      !isWithinTwoDays(reservation.checkInDate))) && (
+                      <>
+                        <Button
+                          variant="outline-danger"
+                          className="mx-2"
+                          onClick={() =>
+                            updateReservation(
+                              reservation.reservationId,
+                              "cancelled"
                               )
                             }
-                          >
-                            Cancel
-                          </button>
-                        </>
-                      )}
+                        >
+                          Cancel
+                        </Button>
+                      </>
+                    )}
                   </td>
                 </tr>
               ))}

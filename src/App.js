@@ -14,6 +14,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import SearchResult from "./pages/SearchResult";
 import Review from "./pages/Review";
+import ViewReservation from "./pages/ViewReservation";
 import { AuthProvider } from "./authentication/AuthOptions";
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
             <Route exact path="/register" element={<Register />} />
             <Route exact path="/searchresult" element={<SearchResult />} />
             <Route exact path="/review" element={<Review />} />
+            <Route exact path="/view" element={<ViewReservation />} />
           </Routes>
           <Footer />
         </Router>
