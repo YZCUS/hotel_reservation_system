@@ -19,7 +19,7 @@ export default function Nvbar() {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
             <Nav.Link as={Link} to="/aboutus">
-              About us
+              About Us
             </Nav.Link>
             <Nav.Link as={Link} to="/gallery">
               Gallery
