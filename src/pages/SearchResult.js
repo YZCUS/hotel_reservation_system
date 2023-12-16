@@ -48,6 +48,27 @@ export default function SearchResult() {
           state: { reservation: await response.json(), room: room },
         });
       }
+      else if(response.status === 404){
+        try {
+          const response = await fetch("http://localhost:8080/reservation/search", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(searchParams),
+          });
+      
+          if (response.ok) {
+            const results = await response.json();
+            navigate("/searchresult", {
+              state: { results: results, searchParams: searchParams },
+            });
+          } else {
+            console.error("Search failed");
+          }
+        } catch (error) {
+          console.error("Error performing search:", error);
+        }
+        alert("The room is no longer available");
+      }
       else {
         console.log("Error creating pending reservation", response.status);
       }

@@ -37,6 +37,17 @@ export default function Register() {
       console.log("Error checkUsernameExists ", error);
     }
   };
+  const checkPasswordsMatch = () => {
+    if (formData.password === "" || formData.confirmPassword === "") {
+      setPasswordNotMatch(false);
+    }
+    else if (formData.password !== formData.confirmPassword) {
+      setPasswordNotMatch(true);
+    }
+    else{
+      setPasswordNotMatch(false);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -116,6 +127,7 @@ export default function Register() {
             name="password"
             value={formData.password}
             onChange={handleChange}
+            onBlur={checkPasswordsMatch}
             required
           />
         </Form.Group>
@@ -127,6 +139,7 @@ export default function Register() {
             name="confirmPassword"
             value={formData.confirmPassword}
             onChange={handleChange}
+            onBlur={checkPasswordsMatch}
             required
           />
         </Form.Group>
