@@ -36,7 +36,7 @@ export default function SearchResult() {
         status: "pending",
       };
       const response = await fetch(
-        "http://localhost:3000/reservation/pending",
+        "http://localhost:8080/reservation/pending",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
