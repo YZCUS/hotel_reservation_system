@@ -8,7 +8,7 @@ export default function History() {
   const [reservations, setReservations] = useState([]);
   const navigate = useNavigate();
   useEffect(() => {
-    async function findReservationByCutsomerId(customerId) {
+    async function findReservationByCustomerId(customerId) {
       try {
         const response = await fetch(
           `http://localhost:8080/reservation/history?customerId=${customerId}`,
@@ -21,11 +21,11 @@ export default function History() {
         }
         throw new Error("Request failed!");
       } catch (error) {
-        console.log("Error findReservationByCutsomerId ", error);
+        console.log("Error findReservationByCustomerId ", error);
       }
     }
     if (customerId) {
-      findReservationByCutsomerId(customerId);
+      findReservationByCustomerId(customerId);
     } else {
       navigate("/login");
     }

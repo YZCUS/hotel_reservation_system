@@ -25,8 +25,8 @@ export default function Review() {
   const handleConfirm = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8080/reservation/update?reservationId=${reservation.reservationId}&newStatus=confirmed`,
-        { method: "PUT" }
+        `http://localhost:8080/reservation/update?customerId=${customerId}&reservationId=${reservation.reservationId}&newStatus=confirmed`,
+        { method: "POST" }
       );
       if (response.ok) {
         navigate("/history");
@@ -40,8 +40,8 @@ export default function Review() {
   const handleBack = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8080/reservation/update?reservationId=${reservation.reservationId}&newStatus=cancelled`,
-        { method: "PUT" }
+        `http://localhost:8080/reservation/update?customerId=${customerId}&reservationId=${reservation.reservationId}&newStatus=cancelled`,
+        { method: "POST" }
       );
       if (response.ok) {
         navigate("/reservation");
@@ -52,7 +52,7 @@ export default function Review() {
       console.log("Error cancelling reservation", error);
     }
   };
-  const handleHold =  () => {
+  const handleHold = () => {
     navigate("/history");
   };
   return (

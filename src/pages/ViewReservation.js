@@ -53,11 +53,11 @@ export default function ViewReservation() {
     navigate("/history");
   };
 
-  const handleConfirm = async () => {
+  const handleConfirm = async (customerId, reservationId) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/reservation/update?reservationId=${reservation.reservationId}&newStatus=confirmed`,
-        { method: "PUT" }
+        `http://localhost:8080/reservation/update?customerId=${customerId}&reservationId=${reservationId}&newStatus=confirmed`,
+        { method: "POST" }
       );
       if (response.ok) {
         navigate("/history");
@@ -68,11 +68,11 @@ export default function ViewReservation() {
       console.log("Error confirming reservation", error);
     }
   };
-  const handleCancel = async () => {
+  const handleCancel = async (customerId, reservationId) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/reservation/update?reservationId=${reservation.reservationId}&newStatus=cancelled`,
-        { method: "PUT" }
+        `http://localhost:8080/reservation/update?customerId=${customerId}&reservationId=${reservationId}&newStatus=cancelled`,
+        { method: "POST" }
       );
       if (response.ok) {
         navigate("/history");
@@ -87,30 +87,41 @@ export default function ViewReservation() {
   return (
     <Container className="mt-5">
       <h2 className="text-center mb-4">View Reservation</h2>
-      <Card className="d-flex flex-column justify-content-center mx-auto mb-3"
-          style={{ width: "55%" }}
-        >
+      <Card
+        className="d-flex flex-column justify-content-center mx-auto mb-3"
+        style={{ width: "55%" }}
+      >
         <Card.Body>
           <Card.Title>Reservation Details</Card.Title>
           <ListGroup className="list-group-flush">
-          <ListGroupItem>Hotel: {reservationDetail.hotelName}</ListGroupItem>
-              <ListGroupItem>Hotel Address: {reservationDetail.hotelAddress}</ListGroupItem>
-              <ListGroupItem>Room Number: {reservationDetail.roomNumber}</ListGroupItem>
-              <ListGroupItem>Room Type: {reservationDetail.roomType}</ListGroupItem>
-              <ListGroupItem>Bed Number: {reservationDetail.bedNumber}</ListGroupItem>
-              <ListGroupItem>Capacity: {reservationDetail.capacity}</ListGroupItem>
-              <ListGroupItem>
-                Price per Night: ${reservationDetail.pricePerNight}
-              </ListGroupItem>
-              <ListGroupItem>
-                Total Price: ${reservationDetail.totalPrice}
-              </ListGroupItem>
-              <ListGroupItem>
-                Check-in Date: {reservationDetail.checkInDate}
-              </ListGroupItem>
-              <ListGroupItem>
-                Check-out Date: {reservationDetail.checkOutDate}
-              </ListGroupItem>
+            <ListGroupItem>Hotel: {reservationDetail.hotelName}</ListGroupItem>
+            <ListGroupItem>
+              Hotel Address: {reservationDetail.hotelAddress}
+            </ListGroupItem>
+            <ListGroupItem>
+              Room Number: {reservationDetail.roomNumber}
+            </ListGroupItem>
+            <ListGroupItem>
+              Room Type: {reservationDetail.roomType}
+            </ListGroupItem>
+            <ListGroupItem>
+              Bed Number: {reservationDetail.bedNumber}
+            </ListGroupItem>
+            <ListGroupItem>
+              Capacity: {reservationDetail.capacity}
+            </ListGroupItem>
+            <ListGroupItem>
+              Price per Night: ${reservationDetail.pricePerNight}
+            </ListGroupItem>
+            <ListGroupItem>
+              Total Price: ${reservationDetail.totalPrice}
+            </ListGroupItem>
+            <ListGroupItem>
+              Check-in Date: {reservationDetail.checkInDate}
+            </ListGroupItem>
+            <ListGroupItem>
+              Check-out Date: {reservationDetail.checkOutDate}
+            </ListGroupItem>
           </ListGroup>
         </Card.Body>
         <Card.Footer>
@@ -118,13 +129,17 @@ export default function ViewReservation() {
             <>
               <Button
                 variant="outline-primary"
-                onClick={() => handleConfirm(reservation.reservationId)}
+                onClick={() =>
+                  handleConfirm(customerId, reservation.reservationId)
+                }
               >
                 Confirm
               </Button>
               <Button
                 variant="danger"
-                onClick={() => handleCancel(reservation.reservationId)}
+                onClick={() =>
+                  handleCancel(customerId, reservation.reservationId)
+                }
                 className="ms-2"
               >
                 Cancel
@@ -135,7 +150,9 @@ export default function ViewReservation() {
             !isWithinTwoDays(reservation.checkInDate) && (
               <Button
                 variant="danger"
-                onClick={() => handleCancel(reservation.reservationId)}
+                onClick={() =>
+                  handleCancel(customerId, reservation.reservationId)
+                }
               >
                 Cancel
               </Button>
