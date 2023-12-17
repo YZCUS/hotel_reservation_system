@@ -9,9 +9,9 @@ export default function Aboutus() {
     <Container className="mt-5">
       <Row className="justify-content-md-center">
         <Col md={8}>
-          <Card className="shadow">
+          <Card className="shadow m-3 p-3">
             <Card.Body>
-              <Card.Title as="h1" className="text-center">
+              <Card.Title as="h1" className="text-center mb-3">
                 About Us
               </Card.Title>
               <Card.Text>

@@ -21,16 +21,16 @@ import destination_1 from "../img/Hyatt/destination_1.jpg";
 
 const GallerySection = ({ title, images }) => {
   return (
-    <div className="mb-4">
-      <h3>{title}</h3>
+    <div className="mb-4 mx-5">
+      <h5 className="d-flex mx-2 my-2">{title}</h5>
       <Carousel fade>
         {images.map((image, index) => (
           <Carousel.Item key={index}>
             <img
-              className="d-block w-100 mx-3"
+              className="d-block w-100 mx-auto"
               src={image}
               alt={`${title} slide ${index}`}
-              style={{ height: "400px", objectFit: "cover" }}
+              style={{ height: "350px", objectFit: "cover" }}
             />
           </Carousel.Item>
         ))}
@@ -85,5 +85,10 @@ export default function GalleryCarousel() {
     );
   }
 
-  return <Container>{rows}</Container>;
+  return (
+    <Container>
+      <h3 className="d-flex mx-auto my-4 justify-content-center">Gallery</h3>
+      {rows}
+    </Container>
+  );
 }
